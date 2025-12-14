@@ -3,187 +3,454 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detail Reservasi</title>
+    <title>Kelola Reservasi | Restoranku</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
+        /* Variabel Warna Tema */
+        :root {
+            --primary-color: #c59d5f; /* Aksen Emas */
+            --dark-bg: #0a0a0a;     /* Background Utama Gelap */
+            --card-bg: #1e1e1e;     /* Background Card/Table Gelap */
+            --text-light: #fff;     /* Warna Teks Utama */
+            --text-secondary: #999; /* Warna Teks Sekunder */
+            --border-color: rgba(197, 157, 95, 0.3); /* Garis Pembatas Emas Transparan */
+        }
+
+        /* RESET & FONT */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; }
+        body { 
+            font-family: 'Georgia', 'Times New Roman', serif; 
+            background: var(--dark-bg); 
+            color: var(--text-light); 
+            min-height: 100vh;
+        }
+
+        /* -------------------------
+            NAVBAR (DASHBOARD)
+        ------------------------- */
+        nav { 
+            background: #000; /* Lebih pekat dari body */
+            padding: 20px 50px; /* Padding lebih besar */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.7); 
+            border-bottom: 1px solid rgba(197, 157, 95, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        nav .nav-content { 
+            max-width: 1400px; 
+            margin: 0 auto; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        .nav-brand {
+            color: var(--primary-color);
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        nav .nav-links a { 
+            color: var(--text-secondary); 
+            text-decoration: none; 
+            margin-right: 30px; 
+            font-weight: 600; 
+            transition: color 0.3s;
+            letter-spacing: 1px;
+            font-family: 'Arial', sans-serif;
+            text-transform: uppercase;
+            font-size: 13px;
+        }
+        nav .nav-links a:hover {
+            color: var(--primary-color);
+        }
+        /* Style untuk link yang sedang aktif */
+        nav .nav-links a.active-link {
+            color: var(--primary-color) !important; 
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 5px;
+        }
+        .logout-btn { 
+            background: transparent; 
+            color: var(--primary-color); 
+            border: 2px solid var(--primary-color); 
+            padding: 10px 25px; /* Padding lebih besar */
+            cursor: pointer; 
+            border-radius: 0; /* Menghapus border-radius kecil */
+            transition: all 0.3s;
+            font-family: 'Arial', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .logout-btn:hover {
+            background: var(--primary-color);
+            color: #000;
+        }
+
+        /* -------------------------
+            CONTAINER & HEADER
+        ------------------------- */
+        .container { 
+            max-width: 1400px; 
+            margin: 40px auto; /* Margin disesuaikan */
+            padding: 0 50px; 
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
         
-        nav { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 15px 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        nav .nav-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-        nav .nav-links a { color: white; text-decoration: none; margin-right: 25px; font-weight: 500; }
-        .logout-btn { background: rgba(255,255,255,0.2); color: white; border: 2px solid white; padding: 8px 20px; cursor: pointer; border-radius: 5px; }
+        .header { margin-bottom: 30px; border-bottom: 2px solid rgba(197, 157, 95, 0.1); padding-bottom: 15px;}
+        .header h1 { 
+            color: var(--primary-color); 
+            font-size: 36px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        .header p {
+            color: var(--text-secondary);
+            margin-top: 8px;
+            font-family: 'Arial', sans-serif;
+            font-size: 14px;
+        }
+
+        /* -------------------------
+            TOMBOL
+        ------------------------- */
+        .btn { 
+            padding: 8px 16px; /* Padding disesuaikan */
+            border: 1px solid; 
+            border-radius: 0; /* Tanpa border radius */
+            cursor: pointer; 
+            text-decoration: none; 
+            display: inline-flex; /* Untuk menengahkan ikon */
+            align-items: center;
+            font-weight: 600; 
+            font-size: 11px; /* Ukuran lebih kecil */
+            margin-right: 5px; 
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s;
+            font-family: 'Arial', sans-serif;
+        }
+        .btn i { margin-right: 5px; }
+        .btn:hover {
+            opacity: 1;
+            transform: translateY(-2px); /* Efek hover yang lebih elegan */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        /* Tombol Aksi */
+        .btn-success { background: #27ae60; color: white; border-color: #27ae60; } /* Terima */
+        .btn-success:hover { background: #1e8449; }
         
-        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+        .btn-danger { background: #e74c3c; color: white; border-color: #e74c3c; } /* Tolak */
+        .btn-danger:hover { background: #c0392b; }
         
-        .header { margin-bottom: 30px; }
-        .header h1 { color: #2c3e50; }
+        .btn-info { background: transparent; color: #3498db; border-color: #3498db; } /* Detail */
+        .btn-info:hover { background: #3498db; color: #000; }
         
-        .card { background: white; border-radius: 8px; padding: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 30px; }
+        .btn-warning { background: var(--primary-color); color: #000; border-color: var(--primary-color); } /* Selesai (Emas) */
+        .btn-warning:hover { background: #a8814d; border-color: #a8814d; }
         
-        .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 20px; }
-        .info-item { padding: 15px; background: #f8f9fa; border-radius: 8px; }
-        .info-item strong { display: block; color: #7f8c8d; font-size: 13px; margin-bottom: 8px; text-transform: uppercase; }
-        .info-item span { font-size: 18px; color: #2c3e50; font-weight: 600; }
+        /* -------------------------
+            ALERT
+        ------------------------- */
+        .alert { 
+            padding: 18px; 
+            margin-bottom: 25px; 
+            border-radius: 0; 
+            font-family: 'Arial', sans-serif;
+        }
+        .alert-success { 
+            background: rgba(76, 175, 80, 0.2); 
+            color: #4caf50; 
+            border: 1px solid #4caf50; 
+            border-left: 5px solid #4caf50;
+        }
         
-        .badge { padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; text-transform: uppercase; display: inline-block; }
-        .badge-warning { background: #fff3cd; color: #856404; }
-        .badge-success { background: #d4edda; color: #155724; }
-        .badge-info { background: #d1ecf1; color: #0c5460; }
-        .badge-danger { background: #f8d7da; color: #721c24; }
+        /* -------------------------
+            TABLE & CARD
+        ------------------------- */
+        .card { 
+            background: var(--card-bg); 
+            border-radius: 0; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.7); 
+            overflow: hidden; 
+            border: 1px solid rgba(197, 157, 95, 0.1);
+        }
         
-        .section-title { color: #2c3e50; font-size: 20px; margin: 30px 0 15px 0; padding-bottom: 10px; border-bottom: 2px solid #667eea; }
+        table { width: 100%; border-collapse: collapse; }
+        thead { 
+            background: #252525; 
+            color: var(--primary-color); 
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+            font-family: 'Arial', sans-serif;
+        }
+        th, td { 
+            padding: 18px 15px; /* Padding lebih besar */
+            text-align: left; 
+        }
+        tbody tr { 
+            border-bottom: 1px solid rgba(255,255,255,0.05); 
+        }
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+        tbody tr:hover { 
+            background: #2a2a2a; 
+        }
+
+        /* Teks dalam baris */
+        td {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+        td strong {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+        td small {
+            color: var(--text-secondary);
+            font-family: 'Arial', sans-serif;
+            font-size: 12px;
+            display: block;
+            margin-top: 2px;
+        }
+
+        /* -------------------------
+            BADGES (STATUS)
+        ------------------------- */
+        .badge { 
+            padding: 8px 15px; 
+            border-radius: 4px; /* Sudut lebih persegi */
+            font-size: 11px; 
+            font-weight: 700; 
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: 'Arial', sans-serif;
+        }
+        .badge i { margin-right: 5px; }
+
+        /* Pending (Emas) */
+        .badge-warning { 
+            background: rgba(197, 157, 95, 0.2); 
+            color: var(--primary-color); 
+            border: 1px solid var(--primary-color); 
+        } 
+        /* Confirmed (Hijau) */
+        .badge-success { 
+            background: #27ae60; 
+            color: white; 
+        } 
+        /* Completed (Biru/Info) */
+        .badge-info { 
+            background: #3498db; 
+            color: white; 
+        } 
+        /* Cancelled (Merah) */
+        .badge-danger { 
+            background: #e74c3c; 
+            color: white; 
+        } 
         
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; color: #2c3e50; font-weight: 600; }
-        .form-select { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 15px; }
+        /* -------------------------
+            EMPTY STATE
+        ------------------------- */
+        .empty-state { 
+            text-align: center; 
+            padding: 80px 20px; 
+            color: var(--text-secondary); 
+            font-family: 'Arial', sans-serif;
+            border: 1px dashed var(--border-color);
+            background: #151515;
+            border-radius: 4px;
+        }
+        .empty-state h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+        .action-group {
+            display: flex;
+            gap: 10px; /* Jarak antar tombol diperbesar */
+            flex-wrap: wrap; /* Pastikan tombol tetap responsif */
+        }
         
-        .btn { padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; text-decoration: none; display: inline-block; font-weight: 600; font-size: 14px; margin-right: 10px; transition: all 0.3s; }
-        .btn-primary { background: #667eea; color: white; }
-        .btn-primary:hover { background: #5568d3; }
-        .btn-success { background: #27ae60; color: white; }
-        .btn-success:hover { background: #229954; }
-        .btn-secondary { background: #7f8c8d; color: white; }
-        .btn-secondary:hover { background: #6c7a89; }
-        
-        .alert { padding: 15px; margin-bottom: 20px; border-radius: 8px; }
-        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .container {
+                padding: 0 20px;
+            }
+            nav {
+                padding: 15px 20px;
+            }
+            /* Table Responsive */
+            .card {
+                overflow-x: auto;
+            }
+            table {
+                min-width: 800px; /* Lebar minimum agar tidak terlalu sempit */
+            }
+        }
         @media (max-width: 768px) {
-            .info-grid { grid-template-columns: 1fr; }
+            nav .nav-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            nav .nav-links {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            nav .nav-links a {
+                margin: 0 10px;
+            }
+            .header h1 {
+                font-size: 28px;
+            }
+            .action-group {
+                flex-direction: column;
+                gap: 5px;
+            }
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
     <nav>
         <div class="nav-content">
-            <div class="nav-links">
-                <a href="{{ route('employee.dashboard') }}">🏠 Dashboard</a>
-                <a href="{{ route('employee.reservations.index') }}">📅 Reservasi</a>
-                <a href="{{ route('employee.orders.index') }}">🛒 Pesanan</a>
+            <div class="nav-brand">
+                <i class="fas fa-utensils"></i> RESTORANKU
             </div>
+            
+            <div class="nav-links">
+                <a href="{{ route('employee.dashboard') }}"><i class="fas fa-home"></i> Dashboard</a>
+                <a href="{{ route('employee.reservations.index') }}" class="active-link"><i class="fas fa-calendar-alt"></i> Reservasi</a>
+                <a href="{{ route('employee.orders.index') }}"><i class="fas fa-shopping-cart"></i> Pesanan</a>
+            </div>
+
             <form method="POST" action="{{ route('logout') }}" style="display: inline;">
                 @csrf
-                <button type="submit" class="logout-btn">Logout</button>
+                <button type="submit" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> LOGOUT
+                </button>
             </form>
         </div>
     </nav>
 
     <div class="container">
         <div class="header">
-            <h1>📋 Detail Reservasi #{{ $reservation->id }}</h1>
-            <p style="color: #7f8c8d; margin-top: 5px;">Informasi lengkap reservasi pelanggan</p>
+            <h1><i class="fas fa-calendar-check"></i> KELOLA RESERVASI PELANGGAN</h1>
+            <p>Terima atau tolak permintaan reservasi dari pelanggan.</p>
         </div>
 
         @if(session('success'))
         <div class="alert alert-success">
-            {{ session('success') }}
+            <i class="fas fa-check-circle"></i> {{ session('success') }}
         </div>
         @endif
 
         <div class="card">
-            <h3 style="color: #2c3e50; margin-bottom: 20px;">Informasi Reservasi</h3>
-            
-            <div class="info-grid">
-                <div class="info-item">
-                    <strong>ID Reservasi</strong>
-                    <span>#{{ $reservation->id }}</span>
-                </div>
-                
-                <div class="info-item">
-                    <strong>Status</strong>
-                    <span>
-                        @if($reservation->status == 'pending')
-                            <span class="badge badge-warning">Pending</span>
-                        @elseif($reservation->status == 'confirmed')
-                            <span class="badge badge-success">Confirmed</span>
-                        @elseif($reservation->status == 'completed')
-                            <span class="badge badge-info">Completed</span>
-                        @else
-                            <span class="badge badge-danger">Cancelled</span>
-                        @endif
-                    </span>
-                </div>
-                
-                <div class="info-item">
-                    <strong>Nama Customer</strong>
-                    <span>{{ $reservation->user ? $reservation->user->name : 'Guest' }}</span>
-                </div>
-                
-                <div class="info-item">
-                    <strong>Email</strong>
-                    <span>{{ $reservation->user ? $reservation->user->email : '-' }}</span>
-                </div>
-                
-                <div class="info-item">
-                    <strong>Tanggal Reservasi</strong>
-                    <span>{{ \Carbon\Carbon::parse($reservation->date)->format('d M Y') }}</span>
-                </div>
-                
-                <div class="info-item">
-                    <strong>Waktu</strong>
-                    <span>{{ \Carbon\Carbon::parse($reservation->time)->format('H:i') }} WIB</span>
-                </div>
-                
-                <div class="info-item">
-                    <strong>Jumlah Orang</strong>
-                    <span>{{ $reservation->people }} orang</span>
-                </div>
-                
-                <div class="info-item">
-                    <strong>Meja</strong>
-                    <span>{{ $reservation->table ? $reservation->table->name : 'Belum ditentukan' }}</span>
-                </div>
-            </div>
+            {{-- Menggunakan @isset untuk memastikan variabel ada dan tidak null --}}
+            @if(isset($reservations) && $reservations->count() > 0)
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Pelanggan</th>
+                        <th>Meja</th>
+                        <th>Tanggal & Waktu</th>
+                        <th>Jumlah Orang</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($reservations as $reservation)
+                    <tr>
+                        <td><strong>#{{ $reservation->id }}</strong></td>
+                        <td>
+                            @if($reservation->user)
+                                {{ $reservation->user->name }}<br>
+                                <small>{{ $reservation->user->email }}</small>
+                            @else
+                                <small><em>(Guest)</em></small>
+                            @endif
+                        </td>
+                        <td>
+                            @if($reservation->table)
+                                <strong>{{ $reservation->table->name }}</strong><br>
+                                <small>Kapasitas: {{ $reservation->table->capacity }} orang</small>
+                            @else
+                                <small>-</small>
+                            @endif
+                        </td>
+                        <td>
+                            <strong>{{ \Carbon\Carbon::parse($reservation->date)->format('d M Y') }}</strong><br>
+                            <small>Pukul: {{ \Carbon\Carbon::parse($reservation->time)->format('H:i') }}</small>
+                        </td>
+                        <td>{{ $reservation->people }} orang</td>
+                        <td>
+                            @if($reservation->status == 'pending')
+                                <span class="badge badge-warning"><i class="fas fa-clock"></i> Pending</span>
+                            @elseif($reservation->status == 'confirmed')
+                                <span class="badge badge-success"><i class="fas fa-check"></i> Confirmed</span>
+                            @elseif($reservation->status == 'completed')
+                                <span class="badge badge-info"><i class="fas fa-check-double"></i> Completed</span>
+                            @else
+                                <span class="badge badge-danger"><i class="fas fa-times"></i> Cancelled</span>
+                            @endif
+                        </td>
+                        <td>
+                            <div class="action-group">
+                                <a href="{{ route('employee.reservations.show', $reservation->id) }}" class="btn btn-info"><i class="fas fa-eye"></i> Detail</a>
+                                
+                                @if($reservation->status == 'pending')
+                                    
+                                    {{-- ✔ FORM TERIMA (POST) --}}
+                                    <form method="POST" action="{{ route('employee.reservations.updateStatus', $reservation->id) }}" style="display: inline;">
+                                        @csrf
+                                        <input type="hidden" name="status" value="confirmed">
+                                        <button type="submit" class="btn btn-success"><i class="fas fa-check"></i> Terima</button>
+                                    </form>
 
-            @if($reservation->notes)
-            <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 8px;">
-                <strong style="color: #856404;">Catatan:</strong>
-                <p style="color: #856404; margin-top: 5px;">{{ $reservation->notes }}</p>
+                                    {{-- ✖ FORM TOLAK (POST) --}}
+                                    <form method="POST" action="{{ route('employee.reservations.updateStatus', $reservation->id) }}" style="display: inline;">
+                                        @csrf
+                                        <input type="hidden" name="status" value="cancelled">
+                                        <button type="submit" class="btn btn-danger" onclick="return confirm('Apakah Anda yakin ingin menolak reservasi ini?')"><i class="fas fa-times"></i> Tolak</button>
+                                    </form>
+
+                                @elseif($reservation->status == 'confirmed')
+                                    {{-- FORM SELESAI (POST) --}}
+                                    <form method="POST" action="{{ route('employee.reservations.complete', $reservation->id) }}" style="display: inline;">
+                                        @csrf
+                                        <button type="submit" class="btn btn-warning" onclick="return confirm('Set reservasi ini sebagai Selesai?')"><i class="fas fa-clipboard-check"></i> Selesai</button>
+                                    </form>
+                                @endif
+                            </div>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            @else
+            <div class="empty-state">
+                <i class="fas fa-calendar-times" style="font-size: 60px; color: var(--border-color);"></i>
+                <h3>BELUM ADA RESERVASI AKTIF</h3>
+                <p>Reservasi dari pelanggan yang perlu diproses akan muncul di sini.</p>
             </div>
             @endif
         </div>
-
-        {{-- ================= STATUS UPDATE ================= --}}
-        @if($reservation->status != 'completed' && $reservation->status != 'cancelled')
-        <div class="card">
-            <h3 class="section-title">🔄 Ubah Status Reservasi</h3>
-
-            <form action="{{ route('employee.reservations.updateStatus', $reservation->id) }}" method="POST">
-                @csrf
-
-                <div class="form-group">
-                    <label>Pilih Status Baru:</label>
-                    <select name="status" class="form-select" required>
-                        <option value="pending" {{ $reservation->status == 'pending' ? 'selected' : '' }}>Pending</option>
-                        <option value="confirmed" {{ $reservation->status == 'confirmed' ? 'selected' : '' }}>Confirmed</option>
-                        <option value="cancelled" {{ $reservation->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
-                        <option value="completed" {{ $reservation->status == 'completed' ? 'selected' : '' }}>Completed</option>
-                    </select>
-                </div>
-
-                <button type="submit" class="btn btn-primary">💾 Update Status</button>
-            </form>
-        </div>
-        @endif
-
-        {{-- ================= COMPLETE BUTTON ================= --}}
-        @if($reservation->status == 'confirmed')
-        <div class="card">
-            <h3 class="section-title">✅ Selesaikan Reservasi</h3>
-            <p style="color: #7f8c8d; margin-bottom: 15px;">Tandai reservasi ini sebagai selesai setelah customer datang dan makan.</p>
-            
-            <form action="{{ route('employee.reservations.complete', $reservation->id) }}" method="POST">
-                @csrf
-                <button type="submit" class="btn btn-success">
-                    ✔ Tandai Reservasi Telah Selesai
-                </button>
-            </form>
-        </div>
-        @endif
-
-        <a href="{{ route('employee.reservations.index') }}" class="btn btn-secondary">
-            ← Kembali ke Daftar Reservasi
-        </a>
     </div>
 </body>
 </html>

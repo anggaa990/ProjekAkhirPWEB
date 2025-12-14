@@ -26,7 +26,7 @@ class UserSeeder extends Seeder
             'role' => 'employee',
         ]);
 
-        // Customer (jika ada role customer)
+        // Customer 
         User::create([
             'name' => 'Customer User',
             'email' => 'customer@example.com',

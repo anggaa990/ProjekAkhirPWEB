@@ -30,37 +30,41 @@ class ReservationController extends Controller
             'status' => 'required|in:confirmed,cancelled,completed',
         ]);
 
+        $oldStatus = $reservation->status;
+        
+        // Update status reservasi
         $reservation->update(['status' => $request->status]);
 
-        // Status confirmed → meja jadi reserved
-        if ($request->status === 'confirmed' && $reservation->table_id) {
-            RestaurantTable::find($reservation->table_id)
-                ->update(['status' => 'reserved']);
-        }
-
-        // Status cancelled → meja available
-        if ($request->status === 'cancelled' && $reservation->table_id) {
-            RestaurantTable::find($reservation->table_id)
-                ->update(['status' => 'available']);
-        }
-
-        // Status completed → meja available lagi
-        if ($request->status === 'completed' && $reservation->table_id) {
-            RestaurantTable::find($reservation->table_id)
-                ->update(['status' => 'available']);
+        if ($reservation->table_id) {
+            $table = RestaurantTable::find($reservation->table_id);
+            
+            if ($table) {
+                if ($request->status === 'confirmed') {
+                    $table->update(['status' => 'reserved']);
+                }
+                
+                // Status cancelled atau completed → meja available
+                if (in_array($request->status, ['cancelled', 'completed'])) {
+                    if ($table->status === 'reserved') {
+                        $table->update(['status' => 'available']);
+                    }
+                }
+            }
         }
 
         return redirect()->back()->with('success', 'Status reservasi berhasil diperbarui!');
     }
 
-    // Mark reservasi sebagai completed (jika kamu pakai route khusus)
+    // Mark reservasi sebagai completed
     public function complete(Reservation $reservation)
     {
         $reservation->update(['status' => 'completed']);
 
         if ($reservation->table_id) {
-            RestaurantTable::find($reservation->table_id)
-                ->update(['status' => 'available']);
+            $table = RestaurantTable::find($reservation->table_id);
+            if ($table && $table->status === 'reserved') {
+                $table->update(['status' => 'available']);
+            }
         }
 
         return redirect()->back()->with('success', 'Reservasi ditandai selesai!');

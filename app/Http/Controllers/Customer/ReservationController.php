@@ -15,7 +15,7 @@ class ReservationController extends Controller
     public function index()
     {
         $reservations = Reservation::where('user_id', auth()->id())
-            ->with(['table', 'order.items.menu', 'review'])
+            ->with(['table', 'orders.items.menu', 'review']) 
             ->latest()
             ->get();
         
@@ -24,7 +24,6 @@ class ReservationController extends Controller
 
     public function create()
     {
-        // PERBAIKAN: Ganti is_available jadi status = 'available'
         $tables = RestaurantTable::where('status', 'available')->get();
         $menus = Menu::where('is_available', true)->where('stock', '>', 0)->get();
         
@@ -44,6 +43,38 @@ class ReservationController extends Controller
             'menu_items.*.quantity' => 'required|integer|min:1',
         ]);
 
+        // ==========================================================
+        // 🚨 LOGIKA PENCEGAHAN TABRAKAN (Double Booking)
+        // ==========================================================
+        
+        $tableId = $request->table_id;
+        $date = $request->date;
+        $time = $request->time;
+        
+        // Status yang dianggap "memesan" atau "mengunci" meja
+        $activeStatuses = ['pending', 'confirmed']; 
+        
+        $existingReservation = Reservation::where('table_id', $tableId)
+            ->where('date', $date)
+            // Memeriksa tabrakan waktu yang tepat
+            ->where('time', $time)
+            ->whereIn('status', $activeStatuses)
+            ->first();
+
+        if ($existingReservation) {
+            // Menggunakan Carbon untuk memformat tampilan waktu yang lebih baik
+            $formattedDate = \Carbon\Carbon::parse($date)->format('d F Y');
+            $formattedTime = \Carbon\Carbon::parse($time)->format('H:i');
+
+            return back()->withInput()->withErrors([
+                'table_id' => "Meja ini sudah dipesan pada tanggal {$formattedDate} pukul {$formattedTime}."
+            ])->with('error', 'Pemesanan gagal: Meja yang Anda pilih sudah terisi pada waktu tersebut.');
+        }
+
+        // ==========================================================
+        // LOGIKA TRANSAKSI PEMBUATAN RESERVASI
+        // ==========================================================
+        
         DB::beginTransaction();
         try {
             // Buat Reservasi
@@ -57,7 +88,6 @@ class ReservationController extends Controller
                 'notes' => $request->notes,
             ]);
 
-            // Buat Order jika ada menu yang dipilih
             if ($request->has('menu_items') && count($request->menu_items) > 0) {
                 $total = 0;
                 
@@ -96,12 +126,11 @@ class ReservationController extends Controller
 
     public function show(Reservation $reservation)
     {
-        // Pastikan hanya pemilik yang bisa lihat
         if ($reservation->user_id !== auth()->id()) {
             abort(403);
         }
 
-        $reservation->load(['table', 'order.items.menu', 'review']);
+        $reservation->load(['table', 'orders.items.menu', 'review']);
         return view('customer.reservations.show', compact('reservation'));
     }
 }

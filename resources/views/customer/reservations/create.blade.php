@@ -136,6 +136,21 @@
             box-shadow: 0 0 20px rgba(197, 157, 95, 0.2);
         }
 
+        input[readonly] {
+            background: rgba(255, 255, 255, 0.02);
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23c59d5f' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 20px center;
+            padding-right: 45px;
+        }
+
         select option {
             background: #1a1a1a;
             color: #fff;
@@ -148,6 +163,20 @@
 
         textarea::placeholder {
             color: #666;
+        }
+
+        .form-hint {
+            color: #999;
+            font-size: 12px;
+            margin-top: 8px;
+            display: block;
+            font-family: 'Arial', sans-serif;
+            font-style: italic;
+        }
+
+        .form-hint i {
+            margin-right: 6px;
+            color: #c59d5f;
         }
         
         .menu-section {
@@ -426,7 +455,7 @@
                     <select name="table_id" id="table_id" required>
                         <option value="">-- Pilih Meja --</option>
                         @foreach($tables as $table)
-                            <option value="{{ $table->id }}" {{ old('table_id') == $table->id ? 'selected' : '' }}>
+                            <option value="{{ $table->id }}" data-capacity="{{ $table->capacity }}" {{ old('table_id') == $table->id ? 'selected' : '' }}>
                                 {{ $table->name }} (Kapasitas: {{ $table->capacity }} orang)
                             </option>
                         @endforeach
@@ -446,8 +475,11 @@
 
                 <div class="form-group">
                     <label for="people"><i class="fas fa-users"></i> Jumlah Tamu</label>
-                    <input type="number" name="people" id="people" value="{{ old('people', 2) }}" 
-                           min="1" max="20" required>
+                    <input type="number" name="people" id="people" value="{{ old('people', '') }}" 
+                           min="1" max="20" required readonly>
+                    <small class="form-hint">
+                        <i class="fas fa-info-circle"></i> Jumlah tamu otomatis terisi sesuai kapasitas meja yang dipilih
+                    </small>
                 </div>
 
                 <div class="form-group">
@@ -507,6 +539,33 @@
         const selectedMenus = {};
         let total = 0;
 
+        // ===== AUTO-FILL JUMLAH TAMU BERDASARKAN MEJA YANG DIPILIH =====
+        const tableSelect = document.getElementById('table_id');
+        const peopleInput = document.getElementById('people');
+
+        tableSelect.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const capacity = selectedOption.getAttribute('data-capacity');
+            
+            if (capacity) {
+                peopleInput.value = capacity;
+                peopleInput.max = capacity;
+            } else {
+                peopleInput.value = '';
+            }
+        });
+
+        // Set initial value if table is already selected (for old input)
+        if (tableSelect.value) {
+            const selectedOption = tableSelect.options[tableSelect.selectedIndex];
+            const capacity = selectedOption.getAttribute('data-capacity');
+            if (capacity) {
+                peopleInput.value = capacity;
+                peopleInput.max = capacity;
+            }
+        }
+
+        // ===== MENU SELECTION LOGIC =====
         document.querySelectorAll('.menu-item').forEach(item => {
             const addBtn = item.querySelector('.add-menu');
             const qtyControl = item.querySelector('.quantity-control');
