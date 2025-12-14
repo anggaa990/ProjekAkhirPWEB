@@ -12,7 +12,6 @@ class RedirectIfAuthenticated
     public function handle(Request $request, Closure $next): Response
     {
         if (Auth::check()) {
-            // Kalau sudah login, redirect ke dashboard sesuai role
             $role = Auth::user()->role;
             
             return match ($role) {

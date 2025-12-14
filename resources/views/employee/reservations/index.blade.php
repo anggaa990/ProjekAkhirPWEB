@@ -126,18 +126,16 @@
                             
                             @if($reservation->status == 'pending')
                                 
-                                {{-- ✔ FORM TERIMA (PATCH) --}}
+                                {{-- ✔ FORM TERIMA (POST) --}}
                                 <form method="POST" action="{{ route('employee.reservations.updateStatus', $reservation->id) }}" style="display: inline;">
                                     @csrf
-                                    @method('PATCH')
                                     <input type="hidden" name="status" value="confirmed">
                                     <button type="submit" class="btn btn-success">✓ Terima</button>
                                 </form>
 
-                                {{-- ✖ FORM TOLAK (PATCH) --}}
+                                {{-- ✖ FORM TOLAK (POST) --}}
                                 <form method="POST" action="{{ route('employee.reservations.updateStatus', $reservation->id) }}" style="display: inline;">
                                     @csrf
-                                    @method('PATCH')
                                     <input type="hidden" name="status" value="cancelled">
                                     <button type="submit" class="btn btn-danger">✗ Tolak</button>
                                 </form>

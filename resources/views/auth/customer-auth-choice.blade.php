@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - {{ ucfirst($role) }}</title>
+    <title>Customer - Login atau Register</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -44,17 +44,18 @@
             padding: 20px;
         }
 
-        .login-card {
+        .auth-box {
             background: rgba(26, 26, 26, 0.95);
             border: 2px solid rgba(197, 157, 95, 0.3);
-            padding: 50px 45px;
+            border-radius: 0;
+            padding: 60px 50px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
             animation: fadeInUp 0.8s ease;
             position: relative;
             overflow: hidden;
         }
 
-        .login-card::before {
+        .auth-box::before {
             content: '';
             position: absolute;
             top: 0;
@@ -86,23 +87,45 @@
             }
         }
 
-        .login-header {
-            text-align: center;
-            margin-bottom: 40px;
+        .icon-wrapper {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, #c59d5f, #a07d4a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            color: #000;
+            box-shadow: 0 10px 30px rgba(197, 157, 95, 0.4);
+            animation: float 3s ease-in-out infinite;
         }
 
-        .login-title {
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .auth-title {
             font-size: 32px;
             font-weight: bold;
             color: #c59d5f;
             letter-spacing: 3px;
             margin-bottom: 10px;
+            text-align: center;
         }
 
-        .login-subtitle {
+        .auth-subtitle {
             font-size: 14px;
             color: #999;
             letter-spacing: 1px;
+            text-align: center;
+            margin-bottom: 40px;
             font-family: 'Arial', sans-serif;
         }
 
@@ -110,118 +133,98 @@
             width: 60px;
             height: 2px;
             background: #c59d5f;
-            margin: 15px auto 0;
+            margin: 20px auto 40px;
         }
 
-        /* Alert */
-        .alert {
-            padding: 15px 20px;
-            background: rgba(220, 53, 69, 0.15);
-            border: 1px solid rgba(220, 53, 69, 0.3);
-            border-radius: 0;
-            color: #ff6b6b;
-            margin-bottom: 25px;
-            font-size: 14px;
-            font-family: 'Arial', sans-serif;
-            animation: slideDown 0.3s ease;
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 40px;
         }
 
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Form */
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        .form-label {
-            font-size: 13px;
-            color: #c59d5f;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-            display: block;
-            font-family: 'Arial', sans-serif;
-            font-weight: 600;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 15px 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(197, 157, 95, 0.3);
-            color: #fff;
-            font-size: 15px;
-            transition: all 0.3s;
-            font-family: 'Arial', sans-serif;
-            outline: none;
-        }
-
-        .form-input::placeholder {
-            color: #666;
-        }
-
-        .form-input:focus {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: #c59d5f;
-            box-shadow: 0 0 20px rgba(197, 157, 95, 0.2);
-        }
-
-        /* Button */
-        .btn-login {
-            width: 100%;
-            padding: 18px;
+        .btn-auth {
+            padding: 18px 40px;
             font-size: 16px;
             letter-spacing: 2px;
             text-transform: uppercase;
             border: 2px solid #c59d5f;
-            background: #c59d5f;
-            color: #000;
+            background: transparent;
+            color: #c59d5f;
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-weight: 600;
             font-family: 'Arial', sans-serif;
             position: relative;
             overflow: hidden;
-            margin-top: 10px;
         }
 
-        .btn-login::before {
+        .btn-auth::before {
             content: '';
             position: absolute;
             top: 50%;
             left: 50%;
             width: 0;
             height: 0;
-            background: rgba(0, 0, 0, 0.1);
+            background: #c59d5f;
             border-radius: 50%;
             transform: translate(-50%, -50%);
             transition: width 0.6s, height 0.6s;
+            z-index: -1;
         }
 
-        .btn-login:hover::before {
+        .btn-auth:hover::before {
             width: 400px;
             height: 400px;
         }
 
-        .btn-login:hover {
+        .btn-auth:hover {
+            color: #000;
             transform: translateY(-3px);
             box-shadow: 0 10px 30px rgba(197, 157, 95, 0.4);
         }
 
-        .btn-login:active {
-            transform: translateY(-1px);
+        .btn-auth i {
+            margin-right: 12px;
+            font-size: 18px;
         }
 
-        /* Back Link */
+        .btn-primary {
+            background: #c59d5f;
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            background: transparent;
+            color: #c59d5f;
+        }
+
+        .separator {
+            width: 100%;
+            height: 1px;
+            background: rgba(197, 157, 95, 0.2);
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .separator::before {
+            content: 'atau';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(26, 26, 26, 0.95);
+            padding: 0 15px;
+            color: #666;
+            font-size: 12px;
+            letter-spacing: 1px;
+            font-family: 'Arial', sans-serif;
+        }
+
         .back-link {
             text-align: center;
             margin-top: 30px;
@@ -254,20 +257,22 @@
 
         /* Responsive */
         @media (max-width: 768px) {
-            .login-card {
+            .auth-box {
                 padding: 40px 30px;
             }
 
-            .login-title {
+            .auth-title {
                 font-size: 28px;
             }
 
-            .form-input {
-                padding: 14px 18px;
+            .icon-wrapper {
+                width: 80px;
+                height: 80px;
+                font-size: 40px;
             }
 
-            .btn-login {
-                padding: 16px;
+            .btn-auth {
+                padding: 16px 30px;
                 font-size: 14px;
             }
         }
@@ -277,43 +282,35 @@
     <div class="background"></div>
 
     <div class="container">
-        <div class="login-card">
-            <!-- Header -->
-            <div class="login-header">
-                <h3 class="login-title">LOGIN</h3>
-                <div class="divider"></div>
-                <p class="login-subtitle">{{ ucfirst($role) }}</p>
+        <div class="auth-box">
+            <!-- Icon -->
+            <div class="icon-wrapper">
+                <i class="fas fa-user-circle"></i>
             </div>
 
-            <!-- Alert -->
-            @if(session('error'))
-                <div class="alert">
-                    <i class="fas fa-exclamation-circle"></i> {{ session('error') }}
-                </div>
-            @endif
+            <!-- Title -->
+            <h2 class="auth-title">CUSTOMER</h2>
+            <div class="divider"></div>
+            <p class="auth-subtitle">Pilih untuk melanjutkan</p>
 
-            <!-- Form -->
-            <form action="{{ route('login.process', $role) }}" method="POST">
-                @csrf
+            <!-- Buttons -->
+            <div class="btn-group">
+                <a href="{{ route('login.role', 'customer') }}" class="btn-auth btn-primary">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Login
+                </a>
 
-                <div class="form-group">
-                    <label class="form-label">Email</label>
-                    <input type="email" class="form-input" name="email" required placeholder="example@gmail.com" autocomplete="email">
-                </div>
+                <div class="separator"></div>
 
-                <div class="form-group">
-                    <label class="form-label">Password</label>
-                    <input type="password" class="form-input" name="password" required placeholder="••••••••" autocomplete="current-password">
-                </div>
-
-                <button type="submit" class="btn-login">
-                    <i class="fas fa-sign-in-alt"></i> Login
-                </button>
-            </form>
+                <a href="{{ route('register') }}" class="btn-auth">
+                    <i class="fas fa-user-plus"></i>
+                    Register
+                </a>
+            </div>
 
             <!-- Back Link -->
             <div class="back-link">
-                <a href="/">
+                <a href="{{ route('choose.role') }}">
                     <i class="fas fa-arrow-left"></i>
                     <span>Kembali</span>
                 </a>

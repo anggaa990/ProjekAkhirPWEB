@@ -3,174 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pilih Role - Restoran</title>
+    <title>Pilih Role - Restoranku</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: #0a0a0a;
+            color: #fff;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            overflow-x: hidden;
         }
-        
-        .container {
-            max-width: 1000px;
-            width: 100%;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 50px;
-            animation: fadeInDown 0.8s ease;
-        }
-        
-        .header h1 {
-            color: white;
-            font-size: 42px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-        
-        .header p {
-            color: rgba(255,255,255,0.9);
-            font-size: 18px;
-        }
-        
-        .role-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-        
-        .role-card {
-            background: white;
-            border-radius: 20px;
-            padding: 40px 30px;
-            text-align: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            text-decoration: none;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            animation: fadeInUp 0.8s ease;
-        }
-        
-        .role-card:nth-child(1) { animation-delay: 0.1s; }
-        .role-card:nth-child(2) { animation-delay: 0.2s; }
-        .role-card:nth-child(3) { animation-delay: 0.3s; }
-        
-        .role-card::before {
-            content: '';
-            position: absolute;
+
+        /* Background with parallax effect */
+        .background {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 5px;
-            transition: height 0.3s ease;
-        }
-        
-        .role-card.admin::before { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
-        .role-card.employee::before { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
-        .role-card.customer::before { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
-        
-        .role-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        }
-        
-        .role-card:hover::before {
             height: 100%;
-            opacity: 0.1;
+            background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)),
+                        url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            z-index: -1;
         }
-        
-        .role-icon {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 20px;
-            border-radius: 50%;
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 20px;
+            min-height: 100vh;
             display: flex;
-            align-items: center;
+            flex-direction: column;
             justify-content: center;
-            font-size: 50px;
-            transition: all 0.3s ease;
         }
-        
-        .role-card.admin .role-icon {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            box-shadow: 0 10px 25px rgba(245, 87, 108, 0.4);
-        }
-        
-        .role-card.employee .role-icon {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            box-shadow: 0 10px 25px rgba(79, 172, 254, 0.4);
-        }
-        
-        .role-card.customer .role-icon {
-            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-            box-shadow: 0 10px 25px rgba(67, 233, 123, 0.4);
-        }
-        
-        .role-card:hover .role-icon {
-            transform: scale(1.1) rotate(5deg);
-        }
-        
-        .role-card h2 {
-            color: #2c3e50;
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-        
-        .role-card p {
-            color: #7f8c8d;
-            font-size: 15px;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-        
-        .role-badge {
-            display: inline-block;
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .role-card.admin .role-badge {
-            background: rgba(245, 87, 108, 0.1);
-            color: #f5576c;
-        }
-        
-        .role-card.employee .role-badge {
-            background: rgba(79, 172, 254, 0.1);
-            color: #4facfe;
-        }
-        
-        .role-card.customer .role-badge {
-            background: rgba(67, 233, 123, 0.1);
-            color: #43e97b;
-        }
-        
-        .footer {
+
+        /* Header */
+        .header {
             text-align: center;
-            margin-top: 40px;
-            animation: fadeIn 1s ease 0.5s both;
+            margin-bottom: 80px;
+            animation: fadeInDown 1s ease;
         }
-        
-        .footer p {
-            color: rgba(255,255,255,0.8);
-            font-size: 14px;
-        }
-        
+
         @keyframes fadeInDown {
             from {
                 opacity: 0;
@@ -181,7 +62,39 @@
                 transform: translateY(0);
             }
         }
-        
+
+        .logo-text {
+            font-size: 48px;
+            font-weight: bold;
+            color: #c59d5f;
+            letter-spacing: 4px;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: #999;
+            letter-spacing: 2px;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .divider {
+            width: 80px;
+            height: 2px;
+            background: #c59d5f;
+            margin: 20px auto;
+        }
+
+        /* Role Cards Grid */
+        .role-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            margin-bottom: 60px;
+            animation: fadeInUp 1s ease 0.3s both;
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -192,53 +105,242 @@
                 transform: translateY(0);
             }
         }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+
+        .role-card {
+            background: rgba(26, 26, 26, 0.9);
+            border: 2px solid rgba(197, 157, 95, 0.3);
+            padding: 50px 30px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            position: relative;
+            overflow: hidden;
         }
-        
+
+        .role-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(197, 157, 95, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .role-card:hover::before {
+            left: 100%;
+        }
+
+        .role-card:hover {
+            transform: translateY(-15px);
+            border-color: #c59d5f;
+            box-shadow: 0 20px 50px rgba(197, 157, 95, 0.3);
+            background: rgba(197, 157, 95, 0.15);
+        }
+
+        .icon-circle {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 25px;
+            background: linear-gradient(135deg, #c59d5f, #a07d4a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 45px;
+            color: #000;
+            transition: all 0.4s;
+            box-shadow: 0 10px 30px rgba(197, 157, 95, 0.4);
+        }
+
+        .role-card:hover .icon-circle {
+            transform: scale(1.1) rotateY(360deg);
+            box-shadow: 0 15px 40px rgba(197, 157, 95, 0.6);
+        }
+
+        .role-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+            transition: color 0.3s;
+        }
+
+        .role-card:hover .role-title {
+            color: #c59d5f;
+        }
+
+        .role-description {
+            font-size: 15px;
+            color: #999;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-family: 'Arial', sans-serif;
+            transition: color 0.3s;
+        }
+
+        .role-card:hover .role-description {
+            color: #bbb;
+        }
+
+        .role-btn {
+            padding: 15px 35px;
+            font-size: 14px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border: 2px solid #c59d5f;
+            background: transparent;
+            color: #c59d5f;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .role-card:hover .role-btn {
+            background: #c59d5f;
+            color: #000;
+            transform: scale(1.05);
+        }
+
+        /* Back Button */
+        .back-section {
+            text-align: center;
+            animation: fadeIn 1s ease 0.6s both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .back-btn {
+            padding: 16px 40px;
+            font-size: 15px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border: 2px solid rgba(197, 157, 95, 0.5);
+            background: transparent;
+            color: #999;
+            cursor: pointer;
+            transition: all 0.4s;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 600;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .back-btn:hover {
+            background: rgba(197, 157, 95, 0.1);
+            border-color: #c59d5f;
+            color: #c59d5f;
+            transform: translateX(-5px);
+        }
+
+        .back-btn i {
+            margin-right: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .role-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .logo-text {
+                font-size: 36px;
+            }
+        }
+
         @media (max-width: 768px) {
-            .header h1 { font-size: 32px; }
-            .role-grid { grid-template-columns: 1fr; gap: 20px; }
-            .role-card { padding: 30px 20px; }
+            .container {
+                padding: 60px 15px;
+            }
+
+            .logo-text {
+                font-size: 32px;
+            }
+
+            .subtitle {
+                font-size: 16px;
+            }
+
+            .role-title {
+                font-size: 24px;
+            }
+
+            .icon-circle {
+                width: 80px;
+                height: 80px;
+                font-size: 35px;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="background"></div>
+
     <div class="container">
+        <!-- Header -->
         <div class="header">
-            <h1>🍽️ Selamat Datang</h1>
+            <h1 class="logo-text">RESTORANKU</h1>
+            <div class="divider"></div>
+            <p class="subtitle">Silakan pilih role Anda untuk melanjutkan</p>
         </div>
-        
+
+        <!-- Role Cards -->
         <div class="role-grid">
             <!-- Admin Card -->
-            <a href="/login/admin" class="role-card admin">
-                <div class="role-icon">👨‍💼</div>
-                <h2>Admin</h2>
-                <p>Saya disini sebagai Admin Pengelola</p>
-                <span class="role-badge">Full Access</span>
+            <a href="{{ route('login.role', 'admin') }}" class="role-card">
+                <div class="icon-circle">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <h3 class="role-title">Admin</h3>
+                <p class="role-description">
+                    Kelola sistem, kategori, menu, dan laporan
+                </p>
+                <button class="role-btn">Login sebagai Admin</button>
             </a>
-            
+
             <!-- Employee Card -->
-            <a href="/login/employee" class="role-card employee">
-                <div class="role-icon">👨‍🍳</div>
-                <h2>Karyawan</h2>
-                <p>Saya disini sebagai Karyawan Restoran</p>
-                <span class="role-badge">Staff Access</span>
+            <a href="{{ route('login.role', 'employee') }}" class="role-card">
+                <div class="icon-circle">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <h3 class="role-title">Employee</h3>
+                <p class="role-description">
+                    Kelola pesanan dan reservasi pelanggan
+                </p>
+                <button class="role-btn">Login sebagai Employee</button>
             </a>
-            
+
             <!-- Customer Card -->
-            <a href="/login/customer" class="role-card customer">
-                <div class="role-icon">🙋‍♂️</div>
-                <h2>Customer</h2>
-                <p>Saya disini sebagai Pelanggan</p>
-                <span class="role-badge">Guest Access</span>
+            <a href="{{ route('customer.auth.choice') }}" class="role-card">
+                <div class="icon-circle">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h3 class="role-title">Customer</h3>
+                <p class="role-description">
+                    Pesan menu dan buat reservasi
+                </p>
+                <button class="role-btn">Login / Register</button>
             </a>
         </div>
-        
-        <div class="footer">
-            <p>© 2025 Restoran System. All rights reserved.</p>
+
+        <!-- Back Button -->
+        <div class="back-section">
+            <a href="{{ route('landing') }}" class="back-btn">
+                <i class="fas fa-arrow-left"></i>Kembali ke Beranda
+            </a>
         </div>
     </div>
 </body>

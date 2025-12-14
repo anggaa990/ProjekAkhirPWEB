@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - {{ ucfirst($role) }}</title>
+    <title>Registrasi Customer - Restoranku</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -20,7 +20,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
+            padding: 40px 0;
+            overflow-x: hidden;
         }
 
         /* Background with parallax effect */
@@ -39,12 +40,12 @@
         }
 
         .container {
-            max-width: 500px;
+            max-width: 600px;
             width: 100%;
             padding: 20px;
         }
 
-        .login-card {
+        .register-card {
             background: rgba(26, 26, 26, 0.95);
             border: 2px solid rgba(197, 157, 95, 0.3);
             padding: 50px 45px;
@@ -54,7 +55,7 @@
             overflow: hidden;
         }
 
-        .login-card::before {
+        .register-card::before {
             content: '';
             position: absolute;
             top: 0;
@@ -86,12 +87,12 @@
             }
         }
 
-        .login-header {
+        .register-header {
             text-align: center;
             margin-bottom: 40px;
         }
 
-        .login-title {
+        .register-title {
             font-size: 32px;
             font-weight: bold;
             color: #c59d5f;
@@ -99,7 +100,7 @@
             margin-bottom: 10px;
         }
 
-        .login-subtitle {
+        .register-subtitle {
             font-size: 14px;
             color: #999;
             letter-spacing: 1px;
@@ -124,6 +125,7 @@
             font-size: 14px;
             font-family: 'Arial', sans-serif;
             animation: slideDown 0.3s ease;
+            position: relative;
         }
 
         @keyframes slideDown {
@@ -135,6 +137,10 @@
                 opacity: 1;
                 transform: translateY(0);
             }
+        }
+
+        .alert i {
+            margin-right: 8px;
         }
 
         /* Form */
@@ -151,6 +157,17 @@
             display: block;
             font-family: 'Arial', sans-serif;
             font-weight: 600;
+        }
+
+        .form-label i {
+            margin-right: 6px;
+        }
+
+        .form-label .text-muted {
+            color: #666 !important;
+            text-transform: none;
+            font-size: 12px;
+            font-weight: normal;
         }
 
         .form-input {
@@ -175,8 +192,19 @@
             box-shadow: 0 0 20px rgba(197, 157, 95, 0.2);
         }
 
+        .form-input.is-invalid {
+            border-color: rgba(220, 53, 69, 0.5);
+        }
+
+        .invalid-feedback {
+            color: #ff6b6b;
+            font-size: 13px;
+            margin-top: 8px;
+            font-family: 'Arial', sans-serif;
+        }
+
         /* Button */
-        .btn-login {
+        .btn-register {
             width: 100%;
             padding: 18px;
             font-size: 16px;
@@ -194,7 +222,11 @@
             margin-top: 10px;
         }
 
-        .btn-login::before {
+        .btn-register i {
+            margin-right: 10px;
+        }
+
+        .btn-register::before {
             content: '';
             position: absolute;
             top: 50%;
@@ -207,24 +239,54 @@
             transition: width 0.6s, height 0.6s;
         }
 
-        .btn-login:hover::before {
-            width: 400px;
-            height: 400px;
+        .btn-register:hover::before {
+            width: 500px;
+            height: 500px;
         }
 
-        .btn-login:hover {
+        .btn-register:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 30px rgba(197, 157, 95, 0.4);
         }
 
-        .btn-login:active {
+        .btn-register:active {
             transform: translateY(-1px);
         }
 
-        /* Back Link */
-        .back-link {
+        /* Separator */
+        .separator {
+            width: 100%;
+            height: 1px;
+            background: rgba(197, 157, 95, 0.2);
+            margin: 35px 0;
+        }
+
+        /* Links */
+        .text-center {
             text-align: center;
-            margin-top: 30px;
+        }
+
+        .login-link {
+            color: #999;
+            font-size: 14px;
+            font-family: 'Arial', sans-serif;
+            margin-bottom: 15px;
+        }
+
+        .login-link a {
+            color: #c59d5f;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .login-link a:hover {
+            color: #d4ad6f;
+            text-decoration: underline;
+        }
+
+        .back-link {
+            margin-top: 20px;
         }
 
         .back-link a {
@@ -254,11 +316,11 @@
 
         /* Responsive */
         @media (max-width: 768px) {
-            .login-card {
+            .register-card {
                 padding: 40px 30px;
             }
 
-            .login-title {
+            .register-title {
                 font-size: 28px;
             }
 
@@ -266,7 +328,7 @@
                 padding: 14px 18px;
             }
 
-            .btn-login {
+            .btn-register {
                 padding: 16px;
                 font-size: 14px;
             }
@@ -277,45 +339,113 @@
     <div class="background"></div>
 
     <div class="container">
-        <div class="login-card">
+        <div class="register-card">
             <!-- Header -->
-            <div class="login-header">
-                <h3 class="login-title">LOGIN</h3>
+            <div class="register-header">
+                <h3 class="register-title">REGISTRASI</h3>
                 <div class="divider"></div>
-                <p class="login-subtitle">{{ ucfirst($role) }}</p>
+                <p class="register-subtitle">Customer</p>
             </div>
 
             <!-- Alert -->
             @if(session('error'))
                 <div class="alert">
-                    <i class="fas fa-exclamation-circle"></i> {{ session('error') }}
+                    <i class="fas fa-exclamation-circle"></i>{{ session('error') }}
                 </div>
             @endif
 
             <!-- Form -->
-            <form action="{{ route('login.process', $role) }}" method="POST">
+            <form method="POST" action="{{ route('register.process') }}">
                 @csrf
 
                 <div class="form-group">
-                    <label class="form-label">Email</label>
-                    <input type="email" class="form-input" name="email" required placeholder="example@gmail.com" autocomplete="email">
+                    <label class="form-label">
+                        <i class="fas fa-user"></i>Nama Lengkap
+                    </label>
+                    <input type="text" 
+                           class="form-input @error('name') is-invalid @enderror" 
+                           name="name" 
+                           value="{{ old('name') }}" 
+                           placeholder="Masukkan nama lengkap"
+                           required 
+                           autofocus>
+                    @error('name')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Password</label>
-                    <input type="password" class="form-input" name="password" required placeholder="••••••••" autocomplete="current-password">
+                    <label class="form-label">
+                        <i class="fas fa-envelope"></i>Email
+                    </label>
+                    <input type="email" 
+                           class="form-input @error('email') is-invalid @enderror" 
+                           name="email" 
+                           value="{{ old('email') }}" 
+                           placeholder="contoh@email.com"
+                           required>
+                    @error('email')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
 
-                <button type="submit" class="btn-login">
-                    <i class="fas fa-sign-in-alt"></i> Login
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-phone"></i>No. Telepon <span class="text-muted">(Opsional)</span>
+                    </label>
+                    <input type="text" 
+                           class="form-input @error('phone') is-invalid @enderror" 
+                           name="phone" 
+                           value="{{ old('phone') }}" 
+                           placeholder="08xxxxxxxxxx">
+                    @error('phone')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-lock"></i>Password
+                    </label>
+                    <input type="password" 
+                           class="form-input @error('password') is-invalid @enderror" 
+                           name="password" 
+                           placeholder="Minimal 8 karakter"
+                           required>
+                    @error('password')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-lock"></i>Konfirmasi Password
+                    </label>
+                    <input type="password" 
+                           class="form-input" 
+                           name="password_confirmation" 
+                           placeholder="Ulangi password"
+                           required>
+                </div>
+
+                <button type="submit" class="btn-register">
+                    <i class="fas fa-user-check"></i>Daftar Sekarang
                 </button>
             </form>
 
+            <div class="separator"></div>
+
+            <!-- Login Link -->
+            <div class="text-center login-link">
+                Sudah punya akun? 
+                <a href="{{ route('login.role', 'customer') }}">Login di sini</a>
+            </div>
+
             <!-- Back Link -->
-            <div class="back-link">
-                <a href="/">
+            <div class="text-center back-link">
+                <a href="{{ route('landing') }}">
                     <i class="fas fa-arrow-left"></i>
-                    <span>Kembali</span>
+                    <span>Kembali ke Beranda</span>
                 </a>
             </div>
         </div>

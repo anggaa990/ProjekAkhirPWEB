@@ -3,218 +3,414 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buat Reservasi</title>
+    <title>Buat Reservasi - Restoranku</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        
         body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: #0a0a0a;
+            color: #fff;
             min-height: 100vh;
-            padding: 20px;
+            padding: 40px 20px;
         }
-        .container { max-width: 900px; margin: 0 auto; }
+
+        /* Background */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)),
+                        url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            z-index: -1;
+        }
+
+        .container { 
+            max-width: 1100px; 
+            margin: 0 auto; 
+            position: relative;
+            z-index: 1;
+        }
+        
         .card {
-            background: white;
-            border-radius: 15px;
-            padding: 35px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            background: rgba(26, 26, 26, 0.95);
+            border: 2px solid rgba(197, 157, 95, 0.3);
+            padding: 50px 45px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
             margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
         }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #c59d5f, #a07d4a, #c59d5f);
+            background-size: 200% 100%;
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
         .header {
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 3px solid #667eea;
+            margin-bottom: 40px;
+            text-align: center;
         }
-        .header h1 { color: #667eea; margin-bottom: 5px; }
-        .header p { color: #666; }
+        
+        .header h1 { 
+            color: #c59d5f; 
+            font-size: 36px;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+        }
+        
+        .header p { 
+            color: #999; 
+            font-size: 15px;
+            font-family: 'Arial', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .divider {
+            width: 80px;
+            height: 2px;
+            background: #c59d5f;
+            margin: 20px auto;
+        }
+        
         .form-group {
             margin-bottom: 25px;
         }
+        
         label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+            font-size: 13px;
+            color: #c59d5f;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-family: 'Arial', sans-serif;
             font-weight: 600;
-            color: #333;
         }
+
+        label i {
+            margin-right: 8px;
+        }
+        
         input[type="date"],
         input[type="time"],
         input[type="number"],
         select,
         textarea {
             width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(197, 157, 95, 0.3);
+            color: #fff;
             font-size: 15px;
-            transition: border 0.3s;
-        }
-        input:focus, select:focus, textarea:focus {
+            transition: all 0.3s;
+            font-family: 'Arial', sans-serif;
             outline: none;
-            border-color: #667eea;
         }
-        textarea { resize: vertical; min-height: 80px; }
+        
+        input:focus, select:focus, textarea:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #c59d5f;
+            box-shadow: 0 0 20px rgba(197, 157, 95, 0.2);
+        }
+
+        select option {
+            background: #1a1a1a;
+            color: #fff;
+        }
+
+        textarea { 
+            resize: vertical; 
+            min-height: 100px;
+        }
+
+        textarea::placeholder {
+            color: #666;
+        }
         
         .menu-section {
-            background: #f8f9fa;
-            padding: 25px;
-            border-radius: 10px;
-            margin-top: 30px;
+            background: rgba(17, 17, 17, 0.8);
+            padding: 35px;
+            border: 1px solid rgba(197, 157, 95, 0.2);
+            margin-top: 40px;
         }
+        
         .menu-section h3 {
-            color: #667eea;
-            margin-bottom: 20px;
+            color: #c59d5f;
+            margin-bottom: 30px;
+            font-size: 24px;
+            letter-spacing: 2px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
+
+        .menu-section h3 i {
+            font-size: 28px;
+        }
+        
         .menu-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
         }
+        
         .menu-item {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            border: 2px solid #e0e0e0;
+            background: rgba(26, 26, 26, 0.9);
+            padding: 20px;
+            border: 2px solid rgba(197, 157, 95, 0.3);
             transition: all 0.3s;
+            position: relative;
         }
+        
         .menu-item:hover {
-            border-color: #667eea;
-            transform: translateY(-2px);
+            border-color: #c59d5f;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(197, 157, 95, 0.3);
         }
+        
         .menu-item.selected {
-            border-color: #667eea;
-            background: #f0f4ff;
+            border-color: #c59d5f;
+            background: rgba(197, 157, 95, 0.15);
         }
+        
         .menu-item h4 {
-            color: #333;
-            margin-bottom: 5px;
-            font-size: 16px;
-        }
-        .menu-item .price {
-            color: #667eea;
-            font-weight: bold;
+            color: #fff;
+            margin-bottom: 10px;
             font-size: 18px;
-            margin: 8px 0;
+            letter-spacing: 1px;
         }
+        
+        .menu-item .price {
+            color: #c59d5f;
+            font-weight: bold;
+            font-size: 20px;
+            margin: 10px 0;
+            font-family: 'Arial', sans-serif;
+        }
+        
         .menu-item .stock {
             color: #999;
             font-size: 13px;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            font-family: 'Arial', sans-serif;
         }
+        
         .quantity-control {
-            display: flex;
+            display: none;
             align-items: center;
-            gap: 10px;
-            margin-top: 10px;
+            gap: 12px;
+            margin-top: 15px;
+            justify-content: center;
         }
+        
         .quantity-control button {
-            width: 35px;
-            height: 35px;
-            border: none;
-            background: #667eea;
-            color: white;
-            border-radius: 6px;
+            width: 40px;
+            height: 40px;
+            border: 2px solid #c59d5f;
+            background: transparent;
+            color: #c59d5f;
             cursor: pointer;
-            font-size: 18px;
-            transition: background 0.3s;
+            font-size: 20px;
+            transition: all 0.3s;
+            font-weight: bold;
         }
+        
         .quantity-control button:hover {
-            background: #5568d3;
+            background: #c59d5f;
+            color: #000;
         }
+        
         .quantity-control input {
-            width: 60px;
+            width: 70px;
             text-align: center;
-            padding: 8px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(197, 157, 95, 0.3);
+            color: #fff;
         }
         
         .selected-items {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
+            background: rgba(26, 26, 26, 0.9);
+            padding: 30px;
+            border: 2px solid rgba(197, 157, 95, 0.3);
+            margin-top: 30px;
+            display: none;
         }
+        
         .selected-items h4 {
-            color: #667eea;
-            margin-bottom: 15px;
+            color: #c59d5f;
+            margin-bottom: 20px;
+            font-size: 20px;
+            letter-spacing: 2px;
         }
+        
         .selected-item {
             display: flex;
             justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #f0f0f0;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(197, 157, 95, 0.2);
+            font-family: 'Arial', sans-serif;
+            color: #ccc;
         }
+        
         .selected-item:last-child {
             border-bottom: none;
         }
+        
         .total-section {
-            background: #667eea;
-            color: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
+            background: rgba(197, 157, 95, 0.2);
+            border: 2px solid #c59d5f;
+            color: #fff;
+            padding: 25px 30px;
+            margin-top: 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
+        
         .total-section h3 {
-            font-size: 24px;
+            font-size: 22px;
+            letter-spacing: 1px;
+            color: #c59d5f;
         }
         
         .btn {
-            padding: 15px 30px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
+            padding: 16px 35px;
+            border: 2px solid #c59d5f;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
             text-decoration: none;
             display: inline-block;
+            letter-spacing: 1px;
+            font-family: 'Arial', sans-serif;
         }
+        
         .btn-primary {
-            background: #667eea;
-            color: white;
+            background: #c59d5f;
+            color: #000;
         }
+        
         .btn-primary:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
+            background: transparent;
+            color: #c59d5f;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(197, 157, 95, 0.4);
         }
+        
         .btn-secondary {
-            background: #95a5a6;
-            color: white;
+            background: transparent;
+            color: #999;
+            border-color: #666;
         }
+
+        .btn-secondary:hover {
+            border-color: #c59d5f;
+            color: #c59d5f;
+        }
+
+        .add-menu {
+            width: 100%;
+            margin-top: 15px;
+            padding: 12px;
+            font-size: 14px;
+        }
+        
         .form-actions {
             display: flex;
-            gap: 15px;
-            margin-top: 30px;
+            gap: 20px;
+            margin-top: 40px;
+            justify-content: center;
         }
+        
         .alert {
-            padding: 15px 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        .alert-error {
-            background: #f8d7da;
-            color: #721c24;
+            padding: 20px 25px;
+            margin-bottom: 30px;
             border-left: 4px solid #dc3545;
+            background: rgba(220, 53, 69, 0.15);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+        
+        .alert-error {
+            color: #ff6b6b;
+        }
+
+        .alert strong {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .alert ul {
+            margin-left: 20px;
+            font-family: 'Arial', sans-serif;
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .card {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 28px;
+            }
+
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="background"></div>
+
     <div class="container">
         <div class="card">
             <div class="header">
-                <h1>📅 Buat Reservasi</h1>
+                <h1><i class="fas fa-calendar-check"></i> BUAT RESERVASI</h1>
+                <div class="divider"></div>
                 <p>Pesan meja dan menu favorit Anda sekaligus!</p>
             </div>
 
             @if($errors->any())
                 <div class="alert alert-error">
-                    <strong>Terjadi kesalahan:</strong>
-                    <ul style="margin-top: 10px; margin-left: 20px;">
+                    <strong><i class="fas fa-exclamation-triangle"></i> Terjadi kesalahan:</strong>
+                    <ul>
                         @foreach($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
@@ -226,7 +422,7 @@
                 @csrf
 
                 <div class="form-group">
-                    <label for="table_id">🪑 Pilih Meja</label>
+                    <label for="table_id"><i class="fas fa-chair"></i> Pilih Meja</label>
                     <select name="table_id" id="table_id" required>
                         <option value="">-- Pilih Meja --</option>
                         @foreach($tables as $table)
@@ -238,31 +434,31 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="date">📅 Tanggal Reservasi</label>
+                    <label for="date"><i class="fas fa-calendar"></i> Tanggal Reservasi</label>
                     <input type="date" name="date" id="date" value="{{ old('date') }}" 
                            min="{{ date('Y-m-d') }}" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="time">🕐 Waktu</label>
+                    <label for="time"><i class="fas fa-clock"></i> Waktu</label>
                     <input type="time" name="time" id="time" value="{{ old('time') }}" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="people">👥 Jumlah Tamu</label>
+                    <label for="people"><i class="fas fa-users"></i> Jumlah Tamu</label>
                     <input type="number" name="people" id="people" value="{{ old('people', 2) }}" 
                            min="1" max="20" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="notes">📝 Catatan</label>
+                    <label for="notes"><i class="fas fa-sticky-note"></i> Catatan</label>
                     <textarea name="notes" id="notes" placeholder="Contoh: Alergi makanan, permintaan khusus, dll.">{{ old('notes') }}</textarea>
                 </div>
 
                 <div class="menu-section">
                     <h3>
-                        <span>🍽️</span>
-                        <span>Pilih Menu </span>
+                        <i class="fas fa-utensils"></i>
+                        <span>Pilih Menu</span>
                     </h3>
 
                     <div class="menu-grid">
@@ -273,20 +469,20 @@
                                 <div class="price">Rp {{ number_format($menu->price, 0, ',', '.') }}</div>
                                 <div class="stock">Stok: {{ $menu->stock }}</div>
                                 
-                                <div class="quantity-control" style="display: none;">
+                                <div class="quantity-control">
                                     <button type="button" class="qty-minus">-</button>
                                     <input type="number" class="qty-input" value="1" min="1" max="{{ $menu->stock }}" readonly>
                                     <button type="button" class="qty-plus">+</button>
                                 </div>
-                                <button type="button" class="btn btn-primary add-menu" style="width: 100%; margin-top: 10px;">
+                                <button type="button" class="btn btn-primary add-menu">
                                     Tambah
                                 </button>
                             </div>
                         @endforeach
                     </div>
 
-                    <div class="selected-items" id="selectedItems" style="display: none;">
-                        <h4>Menu yang Dipilih:</h4>
+                    <div class="selected-items" id="selectedItems">
+                        <h4><i class="fas fa-list-check"></i> Menu yang Dipilih:</h4>
                         <div id="itemsList"></div>
                         <div class="total-section">
                             <h3>Total Pesanan:</h3>
@@ -296,8 +492,12 @@
                 </div>
 
                 <div class="form-actions">
-                    <a href="{{ route('customer.reservations.index') }}" class="btn btn-secondary">← Batal</a>
-                    <button type="submit" class="btn btn-primary">✓ Buat Reservasi</button>
+                    <a href="{{ route('customer.reservations.index') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Batal
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-check"></i> Buat Reservasi
+                    </button>
                 </div>
             </form>
         </div>
@@ -330,13 +530,15 @@
                     
                     item.classList.add('selected');
                     addBtn.textContent = 'Hapus';
-                    addBtn.style.background = '#e74c3c';
+                    addBtn.style.background = '#dc3545';
+                    addBtn.style.borderColor = '#dc3545';
                     qtyControl.style.display = 'flex';
                 } else {
                     delete selectedMenus[menuId];
                     item.classList.remove('selected');
                     addBtn.textContent = 'Tambah';
-                    addBtn.style.background = '#667eea';
+                    addBtn.style.background = '#c59d5f';
+                    addBtn.style.borderColor = '#c59d5f';
                     qtyControl.style.display = 'none';
                     qtyInput.value = 1;
                 }
@@ -365,7 +567,6 @@
             const selectedSection = document.getElementById('selectedItems');
             const form = document.getElementById('reservationForm');
             
-            // Hapus input menu yang lama
             form.querySelectorAll('input[name^="menu_items"]').forEach(el => el.remove());
             
             itemsList.innerHTML = '';
@@ -386,11 +587,10 @@
                 itemsList.innerHTML += `
                     <div class="selected-item">
                         <span>${menu.name} × ${menu.quantity}</span>
-                        <span style="font-weight: bold;">Rp ${subtotal.toLocaleString('id-ID')}</span>
+                        <span style="font-weight: bold; color: #c59d5f;">Rp ${subtotal.toLocaleString('id-ID')}</span>
                     </div>
                 `;
                 
-                // Tambah hidden input untuk form
                 const menuIdInput = document.createElement('input');
                 menuIdInput.type = 'hidden';
                 menuIdInput.name = `menu_items[${index}][menu_id]`;

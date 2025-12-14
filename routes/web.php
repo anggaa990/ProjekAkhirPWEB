@@ -9,6 +9,8 @@ use App\Http\Controllers\Admin\SalesReportController;
 use App\Http\Controllers\Employee\ReservationController;
 use App\Http\Controllers\Customer\ReservationController as CustomerReservationController;
 use App\Http\Controllers\Customer\ReviewController;
+use App\Http\Controllers\Customer\MenuViewController; 
+use App\Http\Controllers\Customer\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,16 +27,27 @@ Route::get('/', function () {
 |--------------------------------------------------------------------------
 */
 Route::get('/choose-role', [RoleLoginController::class, 'chooseRole'])->name('choose.role');
+
+// Route Pilihan Login atau Register untuk Customer
+Route::get('/customer/auth-choice', [RoleLoginController::class, 'customerAuthChoice'])->name('customer.auth.choice');
+
+// Route Registrasi
+Route::get('/register', [RoleLoginController::class, 'registerForm'])->name('register');
+Route::post('/register', [RoleLoginController::class, 'processRegister'])->name('register.process');
+
+// Route Login
 Route::get('/login/{role}', [RoleLoginController::class, 'loginForm'])->name('login.role');
 Route::post('/login/{role}', [RoleLoginController::class, 'processLogin'])->name('login.process');
+
 Route::post('/logout', [RoleLoginController::class, 'logout'])->name('logout');
 
 /*
 |--------------------------------------------------------------------------
-| Customer Menu Page
+| Customer Menu Page (Public)
 |--------------------------------------------------------------------------
 */
-Route::get('/menu', fn() => view('customer.menu'))->name('menu');
+// ✅ UBAH ROUTE MENU DARI CLOSURE KE CONTROLLER
+Route::get('/menu', [MenuViewController::class, 'index'])->name('menu');
 
 /*
 |--------------------------------------------------------------------------
@@ -69,7 +82,6 @@ Route::middleware(['auth', 'role:employee'])
         // Reservations CRUD
         Route::resource('reservations', ReservationController::class);
 
-        // 🔥 UBAH MENJADI POST
         Route::post('/reservations/{reservation}/status', 
             [ReservationController::class, 'updateStatus'])
             ->name('reservations.updateStatus');
@@ -81,7 +93,6 @@ Route::middleware(['auth', 'role:employee'])
         // Orders
         Route::resource('orders', OrderManagementController::class)->only(['index', 'show']);
 
-        // 🔥 UBAH MENJADI POST
         Route::post('/orders/{order}/status', 
             [OrderManagementController::class, 'updateStatus'])
             ->name('orders.updateStatus');
@@ -97,7 +108,7 @@ Route::middleware(['auth', 'role:customer'])
     ->name('customer.')
     ->group(function () {
 
-        Route::get('/dashboard', fn() => view('customer.dashboard'))->name('dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
         Route::resource('reservations', CustomerReservationController::class)
             ->only(['index', 'create', 'store', 'show']);
