@@ -22,7 +22,7 @@ class CategoryController extends Controller
     public function store(Request $r)
     { 
         Category::create($r->validate(['name'=>'required'])); 
-        return redirect()->route('admin.categories.index'); // TAMBAH admin.
+        return redirect()->route('admin.categories.index'); 
     }
     
     public function edit(Category $category)
@@ -33,7 +33,7 @@ class CategoryController extends Controller
     public function update(Request $r, Category $category)
     { 
         $category->update($r->validate(['name'=>'required'])); 
-        return redirect()->route('admin.categories.index'); // TAMBAH admin.
+        return redirect()->route('admin.categories.index'); 
     }
     
     public function destroy(Category $category)

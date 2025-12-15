@@ -28,7 +28,7 @@ class MenuController extends Controller
             'stock' => 'required|integer',
             'category_id' => 'required|exists:categories,id',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|url',
             'is_available' => 'nullable|boolean'
         ]);
         
@@ -59,7 +59,7 @@ class MenuController extends Controller
             'stock' => 'required|integer',
             'category_id' => 'required|exists:categories,id',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|url',
             'is_available' => 'nullable|boolean'
         ]);
         
