@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class ReservationController extends Controller
 {
@@ -24,7 +25,30 @@ class ReservationController extends Controller
 
     public function create()
     {
-        $tables = RestaurantTable::where('status', 'available')->get();
+        $activeStatuses = ['pending', 'confirmed']; 
+        $now = Carbon::now();
+        $nowDatetimeString = $now->format('Y-m-d H:i:s');
+        
+        $tables = RestaurantTable::all()->map(function($table) use ($activeStatuses, $nowDatetimeString) {
+            
+            // Perubahan Kunci: Menggunakan ->get() untuk mengambil SEMUA reservasi aktif yang akan datang.
+            // Membandingkan gabungan kolom date dan time dengan waktu saat ini.
+            $upcomingReservations = $table->reservations()
+                ->whereIn('status', $activeStatuses)
+                ->whereRaw("date || ' ' || time > ?", [$nowDatetimeString])
+                ->orderBy('date', 'asc')
+                ->orderBy('time', 'asc') 
+                ->get(); 
+
+            // Menyimpan koleksi semua reservasi yang akan datang
+            $table->upcomingReservations = $upcomingReservations; 
+            
+            // Menyimpan reservasi terdekat sebagai referensi cepat (elemen pertama dari koleksi)
+            $table->nextReservation = $upcomingReservations->first(); 
+
+            return $table;
+        });
+
         $menus = Menu::where('is_available', true)->where('stock', '>', 0)->get();
         
         return view('customer.reservations.create', compact('tables', 'menus'));
@@ -43,41 +67,44 @@ class ReservationController extends Controller
             'menu_items.*.quantity' => 'required|integer|min:1',
         ]);
 
-        // ==========================================================
-        // 🚨 LOGIKA PENCEGAHAN TABRAKAN (Double Booking)
-        // ==========================================================
-        
         $tableId = $request->table_id;
         $date = $request->date;
         $time = $request->time;
         
-        // Status yang dianggap "memesan" atau "mengunci" meja
+        $reservationTime = Carbon::parse("{$date} {$time}");
+        $durationMinutes = 90;
+        
+        // Pengecekan dimulai 90 menit sebelum waktu reservasi dan berakhir 90 menit sesudahnya (total bentrokan 3 jam)
+        $checkStartTime = $reservationTime->copy()->subMinutes($durationMinutes);
+        $checkEndTime = $reservationTime->copy()->addMinutes($durationMinutes);
+
         $activeStatuses = ['pending', 'confirmed']; 
         
         $existingReservation = Reservation::where('table_id', $tableId)
-            ->where('date', $date)
-            // Memeriksa tabrakan waktu yang tepat
-            ->where('time', $time)
             ->whereIn('status', $activeStatuses)
+            ->where(function ($query) use ($checkStartTime, $checkEndTime) {
+                // Menggunakan whereRaw dengan operator || untuk menggabungkan DATE dan TIME, 
+                // ini diperlukan untuk SQLite (standar Laravel)
+                $query->whereRaw("date || ' ' || time BETWEEN ? AND ?", 
+                    [
+                        $checkStartTime->format('Y-m-d H:i:s'), 
+                        $checkEndTime->format('Y-m-d H:i:s')
+                    ]);
+            })
             ->first();
 
         if ($existingReservation) {
-            // Menggunakan Carbon untuk memformat tampilan waktu yang lebih baik
-            $formattedDate = \Carbon\Carbon::parse($date)->format('d F Y');
-            $formattedTime = \Carbon\Carbon::parse($time)->format('H:i');
-
+            $formattedDate = Carbon::parse($date)->format('d F Y');
+            $existingTime = Carbon::parse($existingReservation->time)->format('H:i');
+            $requestTime = Carbon::parse($time)->format('H:i');
+            
             return back()->withInput()->withErrors([
-                'table_id' => "Meja ini sudah dipesan pada tanggal {$formattedDate} pukul {$formattedTime}."
-            ])->with('error', 'Pemesanan gagal: Meja yang Anda pilih sudah terisi pada waktu tersebut.');
+                'table_id' => "Meja ini sudah dipesan pada tanggal {$formattedDate}. Terdapat reservasi aktif pukul {$existingTime} yang bentrok dengan waktu yang Anda minta ({$requestTime})."
+            ])->with('error', 'Pemesanan gagal: Meja yang Anda pilih sudah terisi pada waktu yang berdekatan.');
         }
-
-        // ==========================================================
-        // LOGIKA TRANSAKSI PEMBUATAN RESERVASI
-        // ==========================================================
         
         DB::beginTransaction();
         try {
-            // Buat Reservasi
             $reservation = Reservation::create([
                 'user_id' => auth()->id(),
                 'table_id' => $request->table_id,
@@ -101,6 +128,10 @@ class ReservationController extends Controller
                 foreach ($request->menu_items as $item) {
                     $menu = Menu::findOrFail($item['menu_id']);
                     
+                    if ($menu->stock < $item['quantity']) {
+                         throw new \Exception("Stok menu {$menu->name} tidak mencukupi ({$menu->stock} tersisa).");
+                    }
+                    
                     OrderItem::create([
                         'order_id' => $order->id,
                         'menu_id' => $menu->id,
@@ -116,7 +147,7 @@ class ReservationController extends Controller
 
             DB::commit();
             return redirect()->route('customer.reservations.index')
-                ->with('success', 'Reservasi berhasil dibuat!');
+                ->with('success', 'Reservasi berhasil dibuat! Menunggu konfirmasi dari karyawan.');
 
         } catch (\Exception $e) {
             DB::rollback();
